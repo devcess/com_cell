@@ -10,7 +10,8 @@ extern String info;
 extern int po;
 
 
-int DeviceRead() {
+int DeviceRead(String command) {
+    String point;
     String id; String sn; String bsw; int noloop = 1;
     Serial.print("Testing Device \r\n");
     escape();
@@ -36,35 +37,48 @@ int DeviceRead() {
     }
     delay(5000);
     SendString("DC");
-    ReadClear(); ReadClear();
-    //if something = something
+    if (command == "ch"){
+      String point = ""
+      for (int i = 0; i < po; i++){
+        String ratio = ReadLine(); SendString("\r");
+        String water = ReadLine(); SendString("\r");
+        String temp = ReadLine(); SendString("\r");
+        String a = String(i);
+        point = "[" + a + "]" + ratio + water + temp;
+        Serial.println(point);
+        
+      }
+
+    }
     //for (int i = 0; i < po; i++) {
       //append 3 times water, temp, ratio
     //}
 
-    // else:
-    String ratio1 =      ReadLine();SendString("\r");  // Temp
-    String water1 =      ReadLine(); SendString("\r"); // R 2 plus slope or product .03
-    String temperature = ReadLine(); SendString("\r"); // water from 1 + 10
-    String ratio2 =      ReadLine(); SendString("\r"); // Temp
-    String water2 =      ReadLine(); SendString("\r");
-    ReadLine();
-    String tempcomp = ReadLine();
+    else{
+      ReadClear(); ReadClear();
+      String ratio1 =      ReadLine();SendString("\r");  // Temp
+      String water1 =      ReadLine(); SendString("\r"); // R 2 plus slope or product .03
+      String temperature = ReadLine(); SendString("\r"); // water from 1 + 10
+      String ratio2 =      ReadLine(); SendString("\r"); // Temp
+      String water2 =      ReadLine(); SendString("\r");
+      ReadLine();
+      String tempcomp = ReadLine();
 
-    Serial1.print(esc); delay(1500); ReadLine();
+      Serial1.print(esc); delay(1500); ReadLine();
 
-    ratio1 = ratio1.replace("Ratio #1 = ", "");
-    water1 = water1.replace("Water Content #1 = ", "");
-    temperature = temperature.replace("Temperature", "");
-    ratio2 = ratio2.replace("Ratio #2? ", "");
-    water2 = water2.replace("Water Content #2 (%)? ", "");
-    tempcomp = tempcomp.replace("Temperature C", "");
+      ratio1 = ratio1.replace("Ratio #1 = ", "");
+      water1 = water1.replace("Water Content #1 = ", "");
+      temperature = temperature.replace("Temperature", "");
+      ratio2 = ratio2.replace("Ratio #2? ", "");
+      water2 = water2.replace("Water Content #2 (%)? ", "");
+      tempcomp = tempcomp.replace("Temperature C", "");
 
-    String alld = id + "," + sn + "," + bsw + "," + ratio1 + "," + ratio2 + "," + water1 + "," + water2 + "," + temperature + "," + tempcomp;
+      String alld = id + "," + sn + "," + bsw + "," + ratio1 + "," + ratio2 + "," + water1 + "," + water2 + "," + temperature + "," + tempcomp;
 
-    Serial.print(alld);
-    Particle.publish("dinfo", alld, PRIVATE);
-    return 1;
+      Serial.print(alld);
+      Particle.publish("dinfo", alld, PRIVATE);
+      return 1;
+  }
 }
 
 

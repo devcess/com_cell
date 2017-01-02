@@ -13,6 +13,7 @@ int po;
 char esc = a;
 char car = b;
 
+
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
 void setup() {
@@ -58,7 +59,7 @@ int caldata(String command) {
 }
 
 int device(String command) {
-    DeviceRead();
+    DeviceRead(command);
     Serial.print("Sending DB \r\n");
     Serial.print(command);
     Serial1.print("DB \r\n");
