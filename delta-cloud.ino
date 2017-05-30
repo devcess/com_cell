@@ -17,6 +17,7 @@ String point7 = "";
 String point8 = "";
 String point9 = "";
 String point10 = "";
+String rawdata;
 
 constexpr int ARRAY_SIZE = 5;
 int a = 27;
@@ -56,7 +57,11 @@ void setup() {
 
 
 void PubSerial(){
-    String rawdata = ReadLine();
+  if (Serial1.available())
+  {
+    rawdata = ReadLine();
+
+    //String rawdata = ReadLine();
     if      (noloop == 1){ ; }
     else if (rawdata == "" or rawdata.charAt(0) != '['){ delay(2000); }
     else{
@@ -73,9 +78,12 @@ void PubSerial(){
         String rvalue = rawdata.substring(0, pos);
 
         String data = water + "," + temp + "," + rvalue;
+        data = data.replace("[", "");
+        data = data.replace("]", "");
         Particle.publish("water", data);
         }
     }
+  }
 
 int caldata(String command) {
     // apppend to a string everytime it sends the hook-response
