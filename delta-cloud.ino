@@ -1,10 +1,23 @@
+
 #include "readfunc.h" // how to include other files
 #include "serial.h"
 
+bool resetFlag = false;
 String DOUBLE_SPACE = "  ";
 String SINGLE_SPACE = " ";
 String chcal = "";
 String info = "";
+String point1 = "";
+String point2 = "";
+String point3 = "";
+String point4 = "";
+String point5 = "";
+String point6 = "";
+String point7 = "";
+String point8 = "";
+String point9 = "";
+String point10 = "";
+
 constexpr int ARRAY_SIZE = 5;
 int a = 27;
 int b = 13;
@@ -20,6 +33,18 @@ void setup() {
     Particle.function("cal", calibrate);
     Particle.function("device", device);
     Particle.function("caldata", caldata);
+    Particle.function("reboot", reboot);
+    Particle.variable("point1", point1);
+    Particle.variable("point2", point2);
+    Particle.variable("point3", point3);
+    Particle.variable("point4", point4);
+    Particle.variable("point5", point5);
+    Particle.variable("point6", point6);
+    Particle.variable("point7", point7);
+    Particle.variable("point8", point8);
+    Particle.variable("point9", point9);
+    Particle.variable("point10", point10);
+
     Particle.connect();
     Serial1.begin(9600);
     Serial.begin(9600);
@@ -58,10 +83,15 @@ int caldata(String command) {
     info.concat(command + " ");
 }
 
+int reboot(String command){
+  resetFlag = true;
+  delay(1000);
+  return 1;
+}
+
 int device(String command) {
     DeviceRead(command);
-    Serial.print("Sending DB \r\n");
-    Serial.print(command);
+    Serial1.print(esc); delay(1000);
     Serial1.print("DB \r\n");
     noloop = 0;
     return 1;
@@ -70,14 +100,21 @@ int device(String command) {
 
 int calibrate(String command) {
     command = command.replace("\"", "");
+    Serial.print("Command: " + command + " / ");
+    Serial.print("INFO: " + info);
     calibratefunction(command);
     delay(2000);
-    //DeviceRead();
+    Serial1.print(esc); delay(1000);
     Serial1.print("DB \r\n");
     return 1;
 }
 
 void loop() {
+  if (resetFlag){
+    System.reset();
+    }
+  else {
     PubSerial();
     delay(2000);
+  }
 }

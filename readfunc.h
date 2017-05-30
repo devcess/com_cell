@@ -8,6 +8,16 @@ extern String SINGLE_SPACE;
 extern char esc;
 extern String info;
 extern int po;
+extern String point1;
+extern String point2;
+extern String point3;
+extern String point4;
+extern String point5;
+extern String point6;
+extern String point7;
+extern String point8;
+extern String point9;
+extern String point10;
 
 
 int DeviceRead(String command) {
@@ -38,25 +48,79 @@ int DeviceRead(String command) {
     delay(5000);
     SendString("DC");
     if (command == "ch"){
-      String point = ""
+
+      String points = "";
+      String DIVIDER = ":";
+      int POCLEAR = po * 3;
+      for (int i = 0; i < POCLEAR; i++){
+        ReadLine();
+      }
+      SendString("\r");
       for (int i = 0; i < po; i++){
         String ratio = ReadLine(); SendString("\r");
         String water = ReadLine(); SendString("\r");
         String temp = ReadLine(); SendString("\r");
         String a = String(i);
-        point = "[" + a + "]" + ratio + water + temp;
-        Serial.println(point);
-        
-      }
+        String point = "[" + a + "]" + ratio + "," + water + ","  + temp;
+        points.concat(point + ":");
+        }
+        // This is for assiging to variables
+      int pos = points.indexOf(DIVIDER); // next index
+      point1 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 1: " + point1 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point2 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 2: " + point2 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point3 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 3: " + point3 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point4 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 4: " + point4 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point5 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 5: " + point5 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point6 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 6: " + point6 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point7 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 7: " + point7 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point8 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 8: " + point8 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point9 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 9: " + point9 + "\r\n");
+
+      pos = points.indexOf(DIVIDER); // next index
+      point10 = points.substring(0, pos); // removes watercut
+      points = points.remove(0, pos + DIVIDER.length()); // deletes
+      Serial.print("This is point 10: " + point10 + "\r\n");
+
 
     }
-    //for (int i = 0; i < po; i++) {
-      //append 3 times water, temp, ratio
-    //}
 
     else{
       ReadClear(); ReadClear();
-      String ratio1 =      ReadLine();SendString("\r");  // Temp
+      String ratio1 =      ReadLine(); SendString("\r");  // Temp
       String water1 =      ReadLine(); SendString("\r"); // R 2 plus slope or product .03
       String temperature = ReadLine(); SendString("\r"); // water from 1 + 10
       String ratio2 =      ReadLine(); SendString("\r"); // Temp
@@ -130,6 +194,7 @@ int calibratefunction(String command) {
         Serial1.print(tempin + "\r"); delay(1000); // Temp
         Serial1.print("-0.03 %/C \r"); delay(1000);
         Serial1.print("Y \r"); delay(1000);
+        DeviceRead("normal");
       }
     else if(command1 == "calch"){
         //calch points temp1 ratio1 temp2 ratio2
@@ -137,45 +202,40 @@ int calibratefunction(String command) {
         pos = command.indexOf(SINGLE_SPACE);
         String sampleqty = command.substring(0, pos);
         command = command.remove(0, pos + SINGLE_SPACE.length());
-        Serial.print(sampleqty + "\r\n");
-
-        pos = command.indexOf(SINGLE_SPACE);
-        String ratio1 = command.substring(0, pos);
-        command = command.remove(0, pos + SINGLE_SPACE.length());
-        Serial.print(ratio1 + "\r\n");
 
         pos = command.indexOf(SINGLE_SPACE);
         String temp1 = command.substring(0, pos);
         command = command.remove(0, pos + SINGLE_SPACE.length());
-        Serial.print(temp1 + "\r\n");
 
         pos = command.indexOf(SINGLE_SPACE);
-        String ratio2 = command.substring(0, pos);
+        String ratio1 = command.substring(0, pos);
         command = command.remove(0, pos + SINGLE_SPACE.length());
-        Serial.print(ratio2 + "\r\n");
 
         pos = command.indexOf(SINGLE_SPACE);
         String temp2 = command.substring(0, pos);
         command = command.remove(0, pos + SINGLE_SPACE.length());
-        Serial.print(temp2 + "\r\n");
 
+        pos = command.indexOf(SINGLE_SPACE);
+        String ratio2 = command.substring(0, pos);
+        command = command.remove(0, pos + SINGLE_SPACE.length());
+        escape(); delay(1000);
         // THIS IS FOR CC DO THIS FIRST //
         // send CC
-        //SendString("CC");
+        Serial1.print("CC"); delay(1000);
         // send D
-        //SendString("D");
+        Serial1.print("D"); delay(1000);
         // ratio 1
-        //SendString(ratio1 + "\r");
+        Serial1.print(ratio1 + "\r"); delay(1000);
         // temperature 1
-        //SendString(temp1 + "\r");
+        Serial1.print(temp1 + "\r"); delay(1000);
         // send D
-        //SendString("D");
+        Serial1.print("D"); delay(1000);
         // ratio 2
-        //SendString(ratio2 + "\r");
+        Serial1.print(ratio2 + "\r"); delay(1000);
         // temperature 2
-        //SendString(temp2 + "\r");
+        Serial1.print(temp2 + "\r"); delay(1000);
         // Send Y
-        //SendString("Y \r");
+        Serial1.print("Y \r"); delay(1000);
         // CC DONE //
 
         //THIS IS FOR THE CH SECTION //
@@ -215,6 +275,7 @@ int calibratefunction(String command) {
         Serial1.print("Y \r");  delay(1000);
 
         info = ""; // clear info
+        DeviceRead("ch");
       }
     else return -1;
   }
