@@ -1,3 +1,3 @@
-# Delta C remote comunication 
+# remote comunication 
 
-* Use particle to comunicate with Delta C module 
+* Use particle to comunicate with serial module 
